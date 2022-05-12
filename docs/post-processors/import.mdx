@@ -116,8 +116,9 @@ Optional:
   `i386`, `x86_64`, or `arm64`. Defaults to `x86_64`.
 
 - `boot_mode` (string) - The supported boot mode of the resultant AMI. One of:
-  `legacy-bios` or `uefi`. If `architecture` is set to `arm64` then this value
-  must be set to  `uefi`.
+  `legacy-bios` or `uefi`. If `architecture` is set to `arm64` or `tpm_support` is set then this value must be set to `uefi`.
+
+- `tpm_support` (string) - The supported NitroTPM version of the resultant AMI. Only `v2.0` or not specified.
 
 - `custom_endpoint_ec2` (string) - This option is useful if you use a cloud
   provider whose API is compatible with aws EC2. Specify another endpoint

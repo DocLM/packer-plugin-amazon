@@ -50,7 +50,7 @@ type Config struct {
 	Format          string            `mapstructure:"format"`
 	Architecture    string            `mapstructure:"architecture"`
 	BootMode        string            `mapstructure:"boot_mode"`
-
+	TpmSupport      string            `mapstructure:"tpm_support"`
 	ctx interpolate.Context
 }
 
@@ -91,7 +91,7 @@ func (p *PostProcessor) Configure(raws ...interface{}) error {
 
 	if p.config.BootMode == "" {
 		// Graviton instance types run uefi by default
-		if p.config.Architecture == "arm64" {
+		if p.config.Architecture == "arm64" || p.config.TpmSupport == "v2.0" {
 			p.config.BootMode = "uefi"
 		} else {
 			p.config.BootMode = "legacy-bios"
@@ -141,6 +141,16 @@ func (p *PostProcessor) Configure(raws ...interface{}) error {
 	if p.config.Architecture == "arm64" && p.config.BootMode != "uefi" {
 		errs = packersdk.MultiErrorAppend(
 			errs, fmt.Errorf("invalid boot mode '%s' for 'arm64' architecture", p.config.BootMode))
+	}
+
+	if p.config.TpmSupport != "" && p.config.TpmSupport != "v2.0" {
+		errs = packersdk.MultiErrorAppend(
+			errs, fmt.Errorf("invalid tmp support '%s'. Only empty and 'v2.0' are allowed", p.config.TpmSupport))
+	}
+
+	if p.config.TpmSupport == "v2.0" && p.config.BootMode != "uefi" {
+		errs = packersdk.MultiErrorAppend(
+			errs, fmt.Errorf("invalid boot mode '%s'. 'uefi' is required when using NitroTPM", p.config.BootMode))
 	}
 
 	// Anything which flagged return back up the stack
