@@ -83,6 +83,7 @@ type FlatConfig struct {
 	RootVolumeKmsKeyId      *string                           `mapstructure:"root_volume_kms_key_id" required:"false" cty:"root_volume_kms_key_id" hcl:"root_volume_kms_key_id"`
 	Architecture            *string                           `mapstructure:"ami_architecture" required:"false" cty:"ami_architecture" hcl:"ami_architecture"`
 	BootMode                *string                           `mapstructure:"boot_mode" required:"false" cty:"boot_mode" hcl:"boot_mode"`
+	TpmSupport              *string                           `mapstructure:"tpm_support" required:"false" cty:"tpm_support" hcl:"tpm_support"`
 }
 
 // FlatMapstructure returns a new FlatConfig.
@@ -168,6 +169,7 @@ func (*FlatConfig) HCL2Spec() map[string]hcldec.Spec {
 		"root_volume_kms_key_id":        &hcldec.AttrSpec{Name: "root_volume_kms_key_id", Type: cty.String, Required: false},
 		"ami_architecture":              &hcldec.AttrSpec{Name: "ami_architecture", Type: cty.String, Required: false},
 		"boot_mode":                     &hcldec.AttrSpec{Name: "boot_mode", Type: cty.String, Required: false},
+		"tpm_support":                   &hcldec.AttrSpec{Name: "tpm_support", Type: cty.String, Required: false},
 	}
 	return s
 }

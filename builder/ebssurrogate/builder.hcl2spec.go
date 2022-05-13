@@ -201,6 +201,7 @@ type FlatConfig struct {
 	VolumeRunTag                              []config.FlatNameValue                 `mapstructure:"run_volume_tag" required:"false" cty:"run_volume_tag" hcl:"run_volume_tag"`
 	Architecture                              *string                                `mapstructure:"ami_architecture" required:"false" cty:"ami_architecture" hcl:"ami_architecture"`
 	BootMode                                  *string                                `mapstructure:"boot_mode" required:"false" cty:"boot_mode" hcl:"boot_mode"`
+	TpmSupport              *string                           `mapstructure:"tpm_support" required:"false" cty:"tpm_support" hcl:"tpm_support"`
 }
 
 // FlatMapstructure returns a new FlatConfig.
@@ -359,6 +360,7 @@ func (*FlatConfig) HCL2Spec() map[string]hcldec.Spec {
 		"run_volume_tag":                        &hcldec.BlockListSpec{TypeName: "run_volume_tag", Nested: hcldec.ObjectSpec((*config.FlatNameValue)(nil).HCL2Spec())},
 		"ami_architecture":                      &hcldec.AttrSpec{Name: "ami_architecture", Type: cty.String, Required: false},
 		"boot_mode":                             &hcldec.AttrSpec{Name: "boot_mode", Type: cty.String, Required: false},
+		"tpm_support":                   &hcldec.AttrSpec{Name: "tpm_support", Type: cty.String, Required: false},
 	}
 	return s
 }
