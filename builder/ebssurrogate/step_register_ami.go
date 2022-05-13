@@ -26,6 +26,7 @@ type StepRegisterAMI struct {
 	LaunchOmitMap            map[string]bool
 	AMISkipBuildRegion       bool
 	BootMode                 string
+	TpmSupport               string
 }
 
 func (s *StepRegisterAMI) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
@@ -75,6 +76,9 @@ func (s *StepRegisterAMI) Run(ctx context.Context, state multistep.StateBag) mul
 	}
 	if s.BootMode != "" {
 		registerOpts.BootMode = aws.String(s.BootMode)
+	}
+	if s.TpmSupport != "" {
+		registerOpts.TpmSupport = aws.String(s.TpmSupport)
 	}
 	registerResp, err := ec2conn.RegisterImage(registerOpts)
 	if err != nil {

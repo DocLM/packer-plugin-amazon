@@ -75,6 +75,10 @@ type Config struct {
 	// more information. Defaults to `legacy-bios` when `ami_architecture` is `x86_64` and
 	// `uefi` when `ami_architecture` is `arm64`.
 	BootMode string `mapstructure:"boot_mode" required:"false"`
+	// The NitroTPM supported version. Valid option is `v2.0`. See the documentation on
+	// [NitroTPM](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/nitrotpm.html) for
+	// more information.
+	TpmSupport string `mapstructure:"tpm_support" required:"false"`
 
 	ctx interpolate.Context
 }
@@ -181,6 +185,19 @@ func (b *Builder) Prepare(raws ...interface{}) ([]string, []string, error) {
 		}
 		if !valid {
 			errs = packersdk.MultiErrorAppend(errs, errors.New(`The only valid boot_mode values are "legacy-bios" and "uefi"`))
+		}
+	}
+
+	if b.config.TpmSupport != "" {
+		valid := false
+		for _, validTpmSupport := range []string{"v2.0"} {
+			if validTpmSupport == b.config.TpmSupport {
+				valid = true
+				break
+			}
+		}
+		if !valid {
+			errs = packersdk.MultiErrorAppend(errs, errors.New(`The only valid tpm_support value is "v2.0"`))
 		}
 	}
 
@@ -410,6 +427,7 @@ func (b *Builder) Run(ctx context.Context, ui packersdk.Ui, hook packersdk.Hook)
 			AMISkipBuildRegion:       b.config.AMISkipBuildRegion,
 			PollingConfig:            b.config.PollingConfig,
 			BootMode:                 b.config.BootMode,
+			TpmSupport:               b.config.TpmSupport,
 		},
 		&awscommon.StepAMIRegionCopy{
 			AccessConfig:       &b.config.AccessConfig,
